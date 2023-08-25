@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{group_name}} Chatting App</title>
+</head>
+<body>
+    {% comment %} 
+    
+    fetching group_name from views.py    , giving as a dictionary
+
+    {% endcomment %}
+    
+    <h1>
+        Welcome To {{group_name}} Peoples Chatting 
+    </h1>
+
+
+    
+    <div>
+          {% if request.user.is_authenticated %}
+
+        <h2> Hi {{user.username}} </h2> 
+             
+        <h3>Name : {{user.first_name}}  {{user.last_name}} 
+        </h3>
+        {% endif %}
+    </div>
+
+    {% comment %}    2nd method    {% endcomment %}
+    <h2 id="group_name_byid">{{group_name}}</h2>
+
+
+    <textarea  id="chats_logs" cols="90" rows="20">
+        {% for chats in chats %}
+        {{chats.timestamp}}  - {{chats.user.username}} -  {{chats.content}}
+        {% endfor %}
+
+    </textarea> <br><br>
+
+    <input type="text"  id="chat_msg_input", size="64"><br><br>
+    <input type="button" value="Send" id="chat_msg_submit">
+   
+    
+
+    {% comment %}    1st method    {% endcomment %}
+    {{group_name|json_script:"group_name"}}
+   
+   
+   
+   
+   
+    <script>
+
+        //var ws = new WebSocket("ws://127.0.0.1:8000/ws/ac/")        
+
+        //fetching group name through html to javascript
+        console.log("Coming full obj from html to jS :::",group_name)
+
+        //const DOM_of_groupname = document.getElementById("group_name").textContent
+        //const groupName = JSON.parse(DOM_of_groupname)
+        //console.log(groupName)
+
+        // 2nd method of fetching html to JS
+        
+        const group_Name = document.getElementById("group_name_byid").innerText
+        console.log(group_Name)
+
+
+        var ws = new WebSocket(
+            'ws://'
+            + window.location.host
+            +'/ws/sc/'
+            //+groupName
+            +group_Name 
+            + '/'
+        )
+
+        
+        btn = document.getElementById("chat_msg_submit")
+        btn.onclick = function(event){
+            const msgDOM = document.getElementById("chat_msg_input")
+            const msg = msgDOM.value
+            const str_msg = JSON.stringify({"msg": msg})
+            ws.send(str_msg)
+            msgDOM.value = ""
+        }
+
+
+        
+        ws.onopen = function(){
+            console.log("WebSocket connect")
+            //ws.send("Hello ")
+        }
+
+        ws.onmessage = function(event){
+            console.log("Msg receive from server", event)
+            //msg come from consumer
+            // event is in Dictionary, but event.data is in string format i.e '{"message": " "}'
+            console.log("Actual msg in str: ", event.data)
+            const data = JSON.parse(event.data)
+
+            //append msgs come from consumer in chats-box
+            var chats = document.getElementById("chats_logs")
+            chats.value += ("\t"+data.time + " - " + data.user +" -  " + data.msg + "\n\n")
+            
+        }
+
+        ws.onclose = function(event){
+            console.log("Websocket disconnect", event)
+        }
+
+
+      
+
+    </script>
+</body>
+</html>

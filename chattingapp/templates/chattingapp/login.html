@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+</head>
+<body>
+    <h2>User Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button style="width: 200px; height: 30px; padding: 5px; type="submit">Login</button>
+    </form>
+
+    <br><br><br>
+
+    <p>
+        if you have no account kindly   
+        
+        <a href=" {% url 'chattingapp:register' %} ">
+            Register
+        </a> 
+        
+        yourself 
+    </p>  
+    
+</body>
+</html>

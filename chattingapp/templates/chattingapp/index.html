@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counteries</title>
+</head>
+<body>
+
+    <h1>
+        Welcome to chatting apps 
+    </h1>
+    <br><br>
+    
+
+    <div>
+          {% if request.user.is_authenticated %}
+          
+          <p>
+            if u want to logout click button
+         <a href="logout">
+            <button style="width: 50px; height: 30px; padding: 5px; ">logout</button>
+        </a>
+        </p>
+
+        <br><br>
+
+        <h2> Hi {{user.username}} </h2> 
+             
+        <h3>Name : {{user.first_name}}  {{user.last_name}} 
+        </h3>
+
+       
+        <br><br><br><br>
+
+        {% endif %}
+    </div>
+
+
+    <br><br><br>
+
+    <h3>
+        Select a group of country where you want to join
+    </h3>
+
+    <br><br>
+
+
+
+
+    {% comment %} 
+    
+    new form to add new group country in database
+
+    {% endcomment %}
+
+    <p>
+    Create your own country group
+   <form action="{% url 'chattingapp:new_group' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="country_name" id="country_name">
+        <button type="submit" style="width: 80px; height: 30px; padding: 5px;">new group</button>
+    </form>
+    </p>
+
+
+
+
+
+
+    <div>
+       {% for group in groups %}
+   
+       {% if group.name != "favicon.ico" %}
+        
+        <a href="{% url 'chattingapp:chat_apps' group.name  %}">
+        
+            {{ group.name }}
+        
+        </a><br>
+       <br>
+        {% endif %}
+
+
+    {% endfor %}
+    </div>
+
+    <br><br><br>
+
+
+    {% comment %} <div>
+        <a href="{% url 'chattingapp:chat_apps' 'Pakistan' %}">Pakistan</a><br>
+        <a href="{% url 'chattingapp:chat_apps' 'India' %}">India</a><br>
+        <a href="{% url 'chattingapp:chat_apps' 'Bangladesh' %}">Bangladesh</a><br>
+
+    </div> {% endcomment %}
+    
+    
+</body>
+</html>
